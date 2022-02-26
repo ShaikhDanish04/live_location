@@ -22,6 +22,7 @@ class _HomeState extends State<Home> {
   LocationData? _locationData;
 
   LocationData? coordinates;
+  MapController mapController = MapController();
 
   LocationController locationController = Get.put(LocationController());
 
@@ -58,9 +59,11 @@ class _HomeState extends State<Home> {
         child: ElevatedButton(
           child: const Text('Get Location'),
           onPressed: () async {
+            // print(mapController);
             _locationData = await location.getLocation().then((value) {
               locationController.getLocation();
               setState(() {
+                mapController.move(LatLng(locationController.lat.value, locationController.lng.value), 5);
                 coordinates = value;
                 // mapController.centerZoomFitBounds(LatLngBounds());
               });
@@ -71,18 +74,27 @@ class _HomeState extends State<Home> {
       body: Obx(() {
         locationController.location.onLocationChanged.listen((LocationData currentLocation) async {
           _locationData = await locationController.location.getLocation().then((value) {
-            print('Set Location');
+            // print('Set Location');
             locationController.lat = Rx(double.parse('${value.latitude}'));
             locationController.lng = Rx(double.parse('${value.longitude}'));
+            setState(() {
+              mapController.move(LatLng(locationController.lat.value, locationController.lng.value), 5);
+              coordinates = currentLocation;
+              // mapController.centerZoomFitBounds(LatLngBounds());
+            });
           });
           locationController.getLocation();
 
           print('Location Changed');
         });
+
         print(locationController.lat);
         print(locationController.lng);
 
+        // mapController?.move(LatLng(locationController.lat.value, locationController.lng.value), 15);
+
         return FlutterMap(
+          mapController: mapController,
           options: MapOptions(
             center: LatLng(locationController.lat.value, locationController.lng.value),
             zoom: 2.0,
@@ -95,9 +107,10 @@ class _HomeState extends State<Home> {
               // retinaMode: true,
               // fastReplace: true,
               // urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              // subdomains: ['a', 'b', 'c'],
               urlTemplate: "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
               subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-              maxZoom: 20,
+              maxZoom: 15,
               attributionBuilder: (_) {
                 return const Text("© OpenStreetMap contributors");
               },
@@ -127,10 +140,10 @@ class _HomeState extends State<Home> {
           ],
         );
       }),
+      // body:
     );
   }
 }
-
 
 // Column(
 //                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,4 +167,3 @@ class _HomeState extends State<Home> {
 //                       ]
 //                     : [],
 //               ),
-              
