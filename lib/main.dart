@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_location/MyHomePage.dart';
+import 'package:live_location/UserTracker.dart';
 import 'package:live_location/home.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: Home(),
+      home: UserTracker(),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:live_location/controllers/LocationController.dart';
+import 'package:live_location/LocationController.dart';
 import 'package:location/location.dart';
 import 'package:latlong2/latlong.dart';
 

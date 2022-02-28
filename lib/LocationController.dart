@@ -1,16 +1,12 @@
-import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
-import 'package:latlong2/latlong.dart';
 
 class LocationController extends GetxController {
+  Location location = new Location();
+
   bool _serviceEnabled = false;
   PermissionStatus? _permissionGranted;
-  Location location = Location();
   LocationData? _locationData;
-  MapController mapController = MapController();
-
-  Rx<double> zoom = 3.0.obs;
 
   Rx<double> lat = 0.0.obs;
   Rx<double> lng = 0.0.obs;
@@ -20,6 +16,13 @@ class LocationController extends GetxController {
     super.onInit();
 
     getLocationPermission();
+  }
+
+  getLocation() async {
+    _locationData = await location.getLocation().then((value) {
+      lat = Rx(double.parse('${value.latitude}'));
+      lng = Rx(double.parse('${value.longitude}'));
+    });
   }
 
   getLocationPermission() async {
@@ -38,13 +41,5 @@ class LocationController extends GetxController {
         return;
       }
     }
-  }
-
-  getLocation() async {
-    _locationData = await location.getLocation().then((value) {
-      lat = Rx(double.parse('${value.latitude}'));
-      lng = Rx(double.parse('${value.longitude}'));
-      mapController.move(LatLng(value.latitude!, value.longitude!), double.parse('${zoom}'));
-    });
   }
 }
